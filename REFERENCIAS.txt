@@ -1,0 +1,11 @@
+Using uC/OS (getting started):
+https://doc.micrium.com/display/kernel304/Single+Task+Application
+
+Specifically about task management:
+https://doc.micrium.com/display/kernel304/About+Task+Management
+
+Resource Managment - Mutex and Semaphores:
+https://doc.micrium.com/display/kernel304/Resource+Management
+
+Additional information about passing messages (message queue):
+https://doc.micrium.com/display/kernel304/Message+Passing
