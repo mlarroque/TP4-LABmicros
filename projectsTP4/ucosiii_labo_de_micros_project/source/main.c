@@ -1,6 +1,8 @@
 #include "hardware.h"
 #include  <os.h>
 
+int data = 0;
+
 /* LEDs */
 #define LED_R_PORT            PORTB
 #define LED_R_GPIO            GPIOB
@@ -27,12 +29,23 @@
 static OS_TCB TaskStartTCB;
 static CPU_STK TaskStartStk[TASKSTART_STK_SIZE];
 
+/*App queue*/
+OS_Q AppQ;
+
+
 /* Task 2 */
 #define TASK2_STK_SIZE			256u
 #define TASK2_STK_SIZE_LIMIT	(TASK2_STK_SIZE / 10u)
 #define TASK2_PRIO              3u
 static OS_TCB Task2TCB;
 static CPU_STK Task2Stk[TASK2_STK_SIZE];
+
+/* Task 3 */
+#define TASK3_STK_SIZE			256u
+#define TASK3_STK_SIZE_LIMIT	(TASK2_STK_SIZE / 10u)
+#define TASK3_PRIO              3u
+static OS_TCB Task3TCB;
+static CPU_STK Task3Stk[TASK3_STK_SIZE];
 
 /* Example semaphore */
 static OS_SEM semTest;
@@ -44,7 +57,45 @@ static void Task2(void *p_arg) {
     while (1) {
         OSSemPost(&semTest, OS_OPT_POST_1, &os_err);
         OSTimeDlyHMSM(0u, 0u, 0u, 500u, OS_OPT_TIME_HMSM_STRICT, &os_err);
-        LED_R_TOGGLE();
+        //LED_R_TOGGLE();
+    }
+}
+
+static void Task3(void *p_arg) {
+    (void)p_arg;
+    OS_ERR os_err;
+    OS_ERR os_errAUX;
+    int * p2data = 0;
+    OS_MSG_SIZE msgSize;
+    while (1) {
+        OSSemPend(&semTest, 0, OS_OPT_PEND_BLOCKING, 0, &os_err);
+        //OSTimeDly(1000u, OS_OPT_TIME_DLY, &os_err);
+        p2data = (int *) OSQPend(&AppQ,
+        						//(OS_MSG_SIZE * )  p2msgSize,
+                              0,
+                        (OS_OPT)        OS_OPT_PEND_BLOCKING,
+                         &msgSize,
+                        							0,
+                        (OS_ERR *)       &os_err);
+        os_errAUX = os_err;
+        if(p2data != 0)
+        {
+        	if(p2data[0] == 0)
+        	{
+        		LED_G_TOGGLE();
+        	    LED_B_TOGGLE();
+        	 }
+        	 else if(p2data[0] == 1)
+        	 {
+        		 LED_B_TOGGLE();
+        		 LED_R_TOGGLE();
+        	  }
+        	  else if(p2data[0] == 2)
+        	   {
+        		  LED_R_TOGGLE();
+        		  LED_G_TOGGLE();
+        	   }
+        }
     }
 }
 
@@ -65,6 +116,12 @@ static void TaskStart(void *p_arg) {
     CPU_IntDisMeasMaxCurReset();
 #endif
 
+
+    OSQCreate((OS_Q      *)&AppQ,
+                 "My App Queue",
+                     (OS_MSG_QTY  )100,
+                     (OS_ERR     *)&os_err);
+
     /* Create semaphore */
     OSSemCreate(&semTest, "Sem Test", 0u, &os_err);
 
@@ -82,10 +139,32 @@ static void TaskStart(void *p_arg) {
                   0u,
                  (OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                  &os_err);
+    OSTaskCreate(&Task3TCB, 			//tcb
+                     "Task 3",				//name
+                      Task3,				//func
+                      0u,					//arg
+                      TASK3_PRIO,			//prio
+                     &Task3Stk[0u],			//stack
+                      TASK3_STK_SIZE_LIMIT,	//stack limit
+                      TASK3_STK_SIZE,		//stack size
+                      0u,
+                      0u,
+                      0u,
+                     (OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                     &os_err);
 
+    data = 0;
+    //LED_G_TOGGLE();
     while (1) {
-        OSTimeDlyHMSM(0u, 0u, 0u, 1000u, OS_OPT_TIME_HMSM_STRICT, &os_err);
-        LED_G_TOGGLE();
+        OSTimeDlyHMSM(0u, 0u, 1u, 0u, OS_OPT_TIME_HMSM_STRICT, &os_err);
+        //OS_ERR os_errDEBUG = os_err;
+        OSQPost(&AppQ, (void *)&data, 4, OS_OPT_POST_ALL, &os_err);
+        //LED_G_TOGGLE();
+        data++;
+        if(data == 3)
+        {
+        	data = 0;
+        }
     }
 }
 

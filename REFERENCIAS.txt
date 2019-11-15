@@ -9,3 +9,9 @@ https://doc.micrium.com/display/kernel304/Resource+Management
 
 Additional information about passing messages (message queue):
 https://doc.micrium.com/display/kernel304/Message+Passing
+
+
+
+VER ACA PARA SABER DE PENDQUEUE:
+
+https://doc.micrium.com/display/kernel304/Multiple+Tasks+Application+with+Kernel+Objects

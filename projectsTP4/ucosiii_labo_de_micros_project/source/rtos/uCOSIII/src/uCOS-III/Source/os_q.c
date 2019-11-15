@@ -395,8 +395,8 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 ************************************************************************************************************************
 */
 
-void  *OSQPend (OS_Q         *p_q,
-                OS_TICK       timeout,
+void  *OSQPend (OS_Q *	p_q,
+                OS_TICK	timeout,
                 OS_OPT        opt,
                 OS_MSG_SIZE  *p_msg_size,
                 CPU_TS       *p_ts,
