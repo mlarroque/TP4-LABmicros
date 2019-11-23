@@ -8,6 +8,7 @@
 #include "hardware.h"
 #include  <os.h>
 #include "App.h"
+#include "cloudRTOS.h"
 #include <stdint.h>
 #include "MK64F12.h"
 
@@ -103,9 +104,9 @@ static void TaskStart(void *p_arg) {
 static void Task2(void *p_arg) {
     (void)p_arg;
     OS_ERR os_err;
-    OS_ERR os_errAUX;
+    //OS_ERR os_errAUX;
     OS_MSG_SIZE msgSize;
-    int * p2data = 0;
+    //int * p2data = 0;
 
     OSQCreate((OS_Q *)&AppQ, "My App Queue", (OS_MSG_QTY  )100, (OS_ERR     *)&os_err);
 
@@ -115,8 +116,8 @@ static void Task2(void *p_arg) {
 
 
     while (1) {
-    	p2data = (int *) OSQPend(&AppQ, 0, (OS_OPT)OS_OPT_PEND_BLOCKING, &msgSize, 0, (OS_ERR *)&os_err);
-    	os_errAUX = os_err;
+    	OSQPend(&AppQ, 0, (OS_OPT)OS_OPT_PEND_BLOCKING, &msgSize, 0, (OS_ERR *)&os_err);
+    	//os_errAUX = os_err;
     	App_Run(); // Program-specific loop
     }
 
@@ -128,12 +129,17 @@ static void Task2(void *p_arg) {
 static void Task3(void *p_arg) {
     (void)p_arg;
     OS_ERR os_err;
-    OS_ERR os_errAUX;
-    int * p2data = 0;
+    //OS_ERR os_errAUX;
+    char * pToBuffer = 0;
     OS_MSG_SIZE msgSize;
-    //while (1) {
 
-    //}
+    OSQCreate((OS_Q *)&CloudQ, "My Cloud Queue", (OS_MSG_QTY  )100, (OS_ERR     *)&os_err);
+    initCloudRTOS((void *)&CloudQ);
+
+    while (1) {
+    	pToBuffer = (char *) OSQPend(&CloudQ, 0, (OS_OPT)OS_OPT_PEND_BLOCKING, &msgSize, 0, &os_err);
+    	runCloudRTOS(pToBuffer, (int) msgSize);
+    }
 }
 
 

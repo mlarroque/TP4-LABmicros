@@ -44,6 +44,7 @@ typedef struct {
     uint8_t nBits;
     int txWaterMark;
     int rxWaterMark;
+    void * p2resourceData;
 } uart_cfg_t;
 
 

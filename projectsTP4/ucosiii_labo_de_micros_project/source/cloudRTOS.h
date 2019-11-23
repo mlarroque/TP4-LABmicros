@@ -10,11 +10,11 @@
 /**
  * @brief Initialize cloud communication.
  */
-void initCloudRTOS(void);
+void initCloudRTOS(void * p2resourcesData);
 
 /**
  * @brief Run communication thread with RTOS.
  */
-void runCloudRTOS(void);
+void runCloudRTOS(char * pToBuffer, int bufSize);
 
 #endif /* CLOUDRTOS_H_ */

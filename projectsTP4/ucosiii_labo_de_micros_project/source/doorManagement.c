@@ -9,7 +9,7 @@
 #include "timer.h"
 #include <stdint.h>
 
-#define PIN_LED_GREEN PORTNUM2PIN(PE,26)
+#define PIN_LED_GREEN PORTNUM2PIN(PB,21)
 
 #define LED_ACTIVE      LOW
 #define LED_INACTIVE	HIGH

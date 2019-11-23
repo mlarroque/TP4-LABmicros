@@ -11,6 +11,13 @@
 #include <stdbool.h>
 #include "hardware.h"
 
+#define  OS_UART_ACTIVE 1
+#if OS_UART_ACTIVE
+#include <os.h>
+static OS_Q * pUART2OSqueue;
+static OS_ERR osUART_err;
+#endif
+
 
 
 #define MAX_BAUD_RATE ((uint32_t)0xFFFF)
@@ -143,6 +150,11 @@ void uartInit (uint8_t id, uart_cfg_t config)
 			p2uart->C2 |= UART_C2_RIE_MASK;
 		}
 		p2uart->C2 |= (UART_C2_RE_MASK);
+
+		if((config.p2resourceData != 0) && (OS_UART_ACTIVE))
+		{
+			pUART2OSqueue = (OS_Q *) config.p2resourceData;
+		}
 
 	}
 }
@@ -340,6 +352,12 @@ void UARTX_RX_TX_IRQHandler(uint8_t id)
 					(markersRXbuffer[id])++;   //preparo el marker para escribir. El marker queda apuntando a la posición del último dato ingresado.
 					RXbuffers[id][(markersRXbuffer[id])] = p2uart->D;
 					countersRXfailed[id] = 0;;
+					if((pUART2OSqueue != 0) && (OS_UART_ACTIVE))
+					{
+						//capaz que hay que armar un paquete mas piola
+						OSQPost(pUART2OSqueue, &(RXbuffers[id][(markersRXbuffer[id])]), 1, OS_OPT_POST_ALL, &osUART_err);
+					}
+
 				}
 				else
 				{

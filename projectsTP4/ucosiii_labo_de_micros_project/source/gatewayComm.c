@@ -86,14 +86,15 @@ void timeoutCallback(void);
  * GLOBAL FUNCTION DEFINITIONS
  ******************************************************************************/
 
-void gatewayCommInit(void){
+void gatewayCommInit(void * p2resourcesData){
 	uart_cfg_t UARTconfig = {
 		1200, 					/* Baudrate. */
 		NON_BLOCKING_SIMPLE, 	/* Mode. */
 		NO_PARITY_UART, 		/* Parity. */
 		NBITS_8, 				/* Bits. */
 		0,
-		0
+		0,
+		p2resourcesData
 	};
 	pit_config_t PITconfig = {
 		CONNECTIVITY_TIMER_VAL, /* Value of timer. In micro seconds if not in chain mode. In cycles if in chain mode. */

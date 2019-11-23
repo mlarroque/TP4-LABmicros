@@ -69,7 +69,7 @@ void App_Init (void * p2userData)
 
     // User Data init
     userDataReset(true, true, true, true, &userData);
-
+    userData.p2resourceData = p2userData;
 }
 
 /* Función que se llama constantemente en un ciclo infinito */

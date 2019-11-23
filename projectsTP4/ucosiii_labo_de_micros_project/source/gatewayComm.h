@@ -13,7 +13,7 @@
 /**
  * @brief Initializes Gateway Communication.
  */
-void gatewayCommInit(void);
+void gatewayCommInit(void * p2resourcesData);
 
 /**
  * @brief Adds new char to received message buffer.

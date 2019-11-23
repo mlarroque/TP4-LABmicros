@@ -16,6 +16,13 @@
 #include "display.h"
 #include "encoder.h"
 
+#define OS_UA_ACTIVE 1
+#if OS_UA_ACTIVE
+#include <os.h>
+//static OS_Q * pUA2OSqueue;
+static OS_ERR osUA_err;
+#endif
+
 #define INCREMENT	1
 #define INITIAL	0
 
@@ -60,6 +67,12 @@ state_t UAinputEvHandler(UserData_t * ud)
 					nextState.routines[KEYCARD_EV] = &MkeycardEvHandler;
 					PrintMessage("MENU", false);
 					openDoorTemporally();
+
+					if(ud->p2resourceData != 0 && OS_UA_ACTIVE)
+					{
+						//aca hay que armar un paquete
+						OSQPost((OS_Q *)(ud->p2resourceData), 1, 1, OS_OPT_POST_ALL, &osUA_err);
+					}
 					break;
 				case CHANGE_PIN:
 					userDataReset(false ,true ,false ,true ,ud);

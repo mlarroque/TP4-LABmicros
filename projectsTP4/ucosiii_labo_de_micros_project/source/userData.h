@@ -28,6 +28,7 @@ typedef struct{
 	char received_PIN[PIN_MAX_LENGTH]; //String con el PIN recibido del usuario.
 	int option; // Si usuario emitio un pedido
 	category_name category;
+	void * p2resourceData;
 }UserData_t;
 
 #endif /* USERDATA_H_ */

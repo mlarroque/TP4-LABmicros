@@ -59,7 +59,7 @@ void InitializeTimers(void)
 			(timers+i)->enabled = false;
 		}
 		//SysTick_Init(&sysTickCallback);
-		pit_config_t pitConf = {1000, 1, false, sysTickCallback};
+		pit_config_t pitConf = {1000, 3, false, sysTickCallback};
 		PITinit();
 		PITstartTimer(&pitConf);
 		initialized = true;
