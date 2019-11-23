@@ -1,0 +1,11 @@
+Write API Key:
+Y5IRWQ0AY0WUV9RR
+
+Read API Keys:
+292DHKOEDPGW9XDD
+
+Test ThingSpeak:
+https://api.thingspeak.com/update?api_key=Y5IRWQ0AY0WUV9RR&fieldx=value
+
+ThingSpeak Private Show:
+https://thingspeak.com/channels/912110/private_show
