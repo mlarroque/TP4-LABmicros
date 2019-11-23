@@ -14,6 +14,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "MK64F12.h"
+
 
 
 /*******************************************************************************
@@ -112,6 +114,10 @@ void gpioToggle (pin_t pin);
 bool gpioRead (pin_t pin);
 
 void setPassiveFilter(pin_t pin);
+
+void setPCRmux(PORT_Type * p2port, uint8_t numPin, uint8_t mux);
+
+void setPCRirqc(PORT_Type * p2port, uint8_t numPin, uint8_t irqMode);
 
 
 /*******************************************************************************
