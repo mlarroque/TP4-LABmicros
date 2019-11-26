@@ -52,7 +52,7 @@ void inactCallback(){
 }
 
 /* Función que se llama 1 vez, al comienzo del programa */
-void App_Init (void * p2userData)
+void App_Init (void * p2userData, void * p2CloudData)
 {
 	// IO Initialization
     InitializeTimers();
@@ -69,7 +69,7 @@ void App_Init (void * p2userData)
 
     // User Data init
     userDataReset(true, true, true, true, &userData);
-    userData.p2resourceData = p2userData;
+    userData.p2resourceData = p2CloudData;
 }
 
 /* Función que se llama constantemente en un ciclo infinito */

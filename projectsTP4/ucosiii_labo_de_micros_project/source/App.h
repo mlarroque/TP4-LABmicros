@@ -9,7 +9,7 @@
 #define APP_H_
 
 
-void App_Init (void * p2userData);
+void App_Init (void * p2userData, void * p2CloudData);
 void App_Run (void);
 
 

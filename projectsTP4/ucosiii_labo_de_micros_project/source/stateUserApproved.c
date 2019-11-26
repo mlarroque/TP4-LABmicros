@@ -65,6 +65,12 @@ state_t UAinputEvHandler(UserData_t * ud)
 			switch(ud->option)
 			{
 				case GRANT_ACCESS:
+					if(ud->p2resourceData != 0 && OS_UA_ACTIVE)
+					{
+						int8_t data = checkFloor((ud->received_ID)[ID_LENGTH - 1]);
+						makePackageUserGranted(packageGranted2Post, data);
+						OSQPost((OS_Q *)(ud->p2resourceData), packageGranted2Post, PACKAGE_GRANTED_SIZE, OS_OPT_POST_ALL, &osUA_err);
+					}
 					userDataReset(true ,true ,true ,true ,ud);
 					nextState.name = MENU;
 					nextState.routines[INPUT_EV] = &MinputEvHandler;
@@ -73,12 +79,7 @@ state_t UAinputEvHandler(UserData_t * ud)
 					PrintMessage("MENU", false);
 					openDoorTemporally();
 
-					if(ud->p2resourceData != 0 && OS_UA_ACTIVE)
-					{
-						int8_t data = checkFloor((ud->received_ID)[ID_LENGTH - 1]);
-						makePackageUserGranted(packageGranted2Post, data);
-						OSQPost((OS_Q *)(ud->p2resourceData), packageGranted2Post, PACKAGE_GRANTED_SIZE, OS_OPT_POST_ALL, &osUA_err);
-					}
+
 					break;
 				case CHANGE_PIN:
 					userDataReset(false ,true ,false ,true ,ud);
