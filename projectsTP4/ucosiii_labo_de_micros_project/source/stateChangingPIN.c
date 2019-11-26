@@ -120,10 +120,6 @@ state_t CPinputEvHandler(UserData_t * ud)
 							PrintMessage("PIN CHANGED", true);
 							userDataReset(true ,true ,true ,true ,ud);
 					}
-					else{
-						createPINString(ud);
-						PrintMessage(PINstring, false);
-					}
 					break;
 			}
 			userDataReset(false ,false ,false ,true ,ud);

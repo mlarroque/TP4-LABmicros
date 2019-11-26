@@ -107,7 +107,7 @@ state_t RPinputEvHandler(UserData_t * ud)
 				case ERASE_LAST:
 					if(j>INITIAL)
 					{
-						ud->received_ID[j-1] = '\0';
+						ud->received_PIN[j-1] = '\0';
 					}
 					userDataReset(false ,false ,false ,true ,ud);
 					createPINString(ud);
@@ -184,10 +184,6 @@ state_t RPinputEvHandler(UserData_t * ud)
 								SetTimer(UNBLOCKED,getBlockedTime(),blockedCallback);
 						    }
 						}
-					}
-					else{
-						createPINString(ud);
-						PrintMessage(PINstring, false);
 					}
 					break;
 			}

@@ -8,6 +8,15 @@
 #include "buildingDataBase.h"
 
 #define MAX_FLOORS	100
+/* Floors defines and macros. */
+#define IS_FIRST_FLOOR(x) ((x >= '0') && (x <= '3'))
+#define FIRST_FLOOR 1
+
+#define IS_SECOND_FLOOR(x) ((x >= '4') && (x <= '6'))
+#define SECOND_FLOOR 2
+
+#define IS_THIRD_FLOOR(x) ((x >= '7') && (x <= '9'))
+#define THIRD_FLOOR 3
 
 static uint16_t	floor[MAX_FLOORS];
 static uint8_t activeFloors = 0;
@@ -48,4 +57,17 @@ uint8_t getBuildingDatabase(uint16_t * data, uint8_t cant){
 	return maxIdx;
 }
 
+uint8_t checkFloor(char idFloor){
+	uint8_t floor = 0;
+	if(IS_FIRST_FLOOR(idFloor)){
+		floor = FIRST_FLOOR;
+	}
+	else if(IS_SECOND_FLOOR(idFloor)){
+		floor = SECOND_FLOOR;
+	}
+	else if(IS_THIRD_FLOOR(idFloor)){
+		floor = THIRD_FLOOR;
+	}
+	return floor;
+}
 

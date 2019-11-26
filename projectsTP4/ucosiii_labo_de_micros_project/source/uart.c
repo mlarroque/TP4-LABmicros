@@ -68,6 +68,9 @@ uint8_t uartIRQs_TX_RX[] = UART_RX_TX_IRQS;
 uint8_t uartIRQs_ERR[] = UART_ERR_IRQS;
 uint8_t uartIRQs_LON[] = UART_LON_IRQS;
 
+#define PACKAGE_SIZE 2
+char package2Post[PACKAGE_SIZE];
+
 void UART_clockGating(uint8_t id);
 void UART_setBaudRate(UART_Type * p2uart, uint32_t baudRate);
 void UART_setParity(UART_Type * p2uart, uint8_t parity);
@@ -90,6 +93,8 @@ void UART4_RX_TX_IRQHandler(void);
 void UART4_ERR_IRQHandler(void);
 
 void copyTXmsg(uint8_t id, const char * msg, uint8_t cant);
+
+void makePackage(char * package2Post, char data);
 
 void uartInit (uint8_t id, uart_cfg_t config)
 {
@@ -351,11 +356,12 @@ void UARTX_RX_TX_IRQHandler(uint8_t id)
 				{
 					(markersRXbuffer[id])++;   //preparo el marker para escribir. El marker queda apuntando a la posición del último dato ingresado.
 					RXbuffers[id][(markersRXbuffer[id])] = p2uart->D;
-					countersRXfailed[id] = 0;;
+					countersRXfailed[id] = 0;
 					if((pUART2OSqueue != 0) && (OS_UART_ACTIVE))
 					{
 						//capaz que hay que armar un paquete mas piola
-						OSQPost(pUART2OSqueue, &(RXbuffers[id][(markersRXbuffer[id])]), 1, OS_OPT_POST_ALL, &osUART_err);
+						makePackage(package2Post, RXbuffers[id][(markersRXbuffer[id])]);
+						OSQPost(pUART2OSqueue, package2Post, PACKAGE_SIZE, OS_OPT_POST_ALL, &osUART_err);
 					}
 
 				}
@@ -539,4 +545,11 @@ void UART_clockGating(uint8_t id)
 			sim->SCGC1 |= SIM_SCGC1_UART4_MASK;
 			break;
 	}
+}
+
+
+void makePackage(char * package2Post, char data)
+{
+	package2Post[0] = 0; //identifier
+	package2Post[1] = data;
 }

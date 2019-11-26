@@ -11,6 +11,7 @@
 int main(void) {
 
 	hw_Init();
+	//Disable_Interrupts();
 	startTasks();
-
+	//Enable_Interrupts();
 }

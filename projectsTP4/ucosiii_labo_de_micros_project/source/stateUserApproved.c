@@ -19,6 +19,7 @@
 #define OS_UA_ACTIVE 1
 #if OS_UA_ACTIVE
 #include <os.h>
+#include "buildingDataBase.h"
 //static OS_Q * pUA2OSqueue;
 static OS_ERR osUA_err;
 #endif
@@ -28,6 +29,10 @@ static OS_ERR osUA_err;
 
 typedef enum {GRANT_ACCESS,CHANGE_PIN,ADMIN_OPTION,MENU_OPTIONS}option_name;
 static const char * menuStrings[MENU_OPTIONS] = {"OPEN","PIN","ADM"};
+
+#define PACKAGE_GRANTED_SIZE 2
+int8_t packageGranted2Post[PACKAGE_GRANTED_SIZE];
+void makePackageUserGranted(int8_t * packageGranted2Post, int8_t data);
 
 state_t UAinputEvHandler(UserData_t * ud)
 {
@@ -70,8 +75,9 @@ state_t UAinputEvHandler(UserData_t * ud)
 
 					if(ud->p2resourceData != 0 && OS_UA_ACTIVE)
 					{
-						//aca hay que armar un paquete
-						OSQPost((OS_Q *)(ud->p2resourceData), 1, 1, OS_OPT_POST_ALL, &osUA_err);
+						int8_t data = checkFloor((ud->received_ID)[ID_LENGTH - 1]);
+						makePackageUserGranted(packageGranted2Post, data);
+						OSQPost((OS_Q *)(ud->p2resourceData), packageGranted2Post, PACKAGE_GRANTED_SIZE, OS_OPT_POST_ALL, &osUA_err);
 					}
 					break;
 				case CHANGE_PIN:
@@ -159,4 +165,10 @@ state_t UAkeycardEvHandler(UserData_t * ud)
 		PrintMessage("INVALID ID", true);
 	}
 	return nextState;
+}
+
+void makePackageUserGranted(int8_t * packageGranted2Post, int8_t data)
+{
+	packageGranted2Post[0] = 1;
+	packageGranted2Post[1] = data;
 }

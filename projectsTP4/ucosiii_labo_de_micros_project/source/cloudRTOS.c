@@ -22,7 +22,6 @@
 #define DATA_INDEX	1
 #define DATA_MAX	20
 #define DATABASE_SIZE	3
-#define FOREVER while(1)
 
 //static char * pToBuffer;
 static uint8_t	cant;
