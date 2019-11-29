@@ -12,6 +12,7 @@
 
 /**
  * @brief Initializes Gateway Communication.
+ * @param p2resourcesData Pointer to thread resources for UART.
  */
 void gatewayCommInit(void * p2resourcesData);
 
