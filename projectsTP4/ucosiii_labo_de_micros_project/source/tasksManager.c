@@ -11,11 +11,13 @@
 #include "cloudRTOS.h"
 #include <stdint.h>
 #include "MK64F12.h"
+#include <stdio.h>
+
 
 
 // Task Start
 #define TASKSTART_STK_SIZE 		512u
-#define TASKSTART_PRIO 			2u
+#define TASKSTART_PRIO 			3u
 static OS_TCB TaskStartTCB;
 static CPU_STK TaskStartStk[TASKSTART_STK_SIZE];
 
@@ -23,14 +25,14 @@ static CPU_STK TaskStartStk[TASKSTART_STK_SIZE];
 // Task 2 - APP
 #define TASK2_STK_SIZE			256u
 #define TASK2_STK_SIZE_LIMIT	(TASK2_STK_SIZE / 10u)
-#define TASK2_PRIO              3u
+#define TASK2_PRIO              4u
 static OS_TCB Task2TCB;
 static CPU_STK Task2Stk[TASK2_STK_SIZE];
 
 // Task 3 - CLOUD
 #define TASK3_STK_SIZE			256u
 #define TASK3_STK_SIZE_LIMIT	(TASK2_STK_SIZE / 10u)
-#define TASK3_PRIO              3u
+#define TASK3_PRIO              4u
 static OS_TCB Task3TCB;
 static CPU_STK Task3Stk[TASK3_STK_SIZE];
 
@@ -99,11 +101,27 @@ static void TaskStart(void *p_arg) {
    // Create Task3
    OSTaskCreate(&Task3TCB, "Things Speak", Task3, 0u, TASK3_PRIO, &Task3Stk[0u], TASK3_STK_SIZE_LIMIT, TASK3_STK_SIZE,
    		   	   	  0u, 0u, 0u, (OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR), &os_err);
-
+   int i = 0;
+   OS_CPU_USAGE usageAUX = 0;
+   OS_CPU_USAGE maxUsageAUX = 0;
    while (1)
    {
+	   usageAUX = OSStatTaskCPUUsage;         // CPU Usage in %
+	   maxUsageAUX = OSStatTaskCPUUsageMax;
 	   OSTimeDlyHMSM(0u, 0u, 10u, 0u, OS_OPT_TIME_HMSM_STRICT, &os_err);
-  }
+	   if((usageAUX >100) && (usageAUX < 300))
+	   {
+		   i++;
+	   }
+	   else if(usageAUX >= 300 && (usageAUX < 500))
+	   {
+		   i++;
+	   }
+	   if(maxUsageAUX > 500)
+	   {
+		   i++;
+	   }
+   }
 }
 
 static void Task2(void *p_arg) {
